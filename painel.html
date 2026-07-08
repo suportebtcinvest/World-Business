@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>World Business - Painel</title>
+
+<link rel="stylesheet" href="style.css">
+
+
+<style>
+
+body{
+    margin:0;
+    background:#f3f5f9;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+
+/* topo */
+
+.topo{
+
+    background:#071d38;
+    color:white;
+    padding:25px;
+    text-align:center;
+
+}
+
+
+.logo{
+
+    font-size:24px;
+    font-weight:bold;
+
+}
+
+
+
+/* boas vindas */
+
+.bemvindo{
+
+    padding:25px;
+    font-size:22px;
+    font-weight:bold;
+
+}
+
+
+
+/* cards */
+
+.container{
+
+    padding:20px;
+}
+
+
+.card{
+
+    background:white;
+    padding:20px;
+    margin-bottom:15px;
+    border-radius:15px;
+
+    box-shadow:0 4px 12px #0002;
+
+}
+
+
+.titulo{
+
+    color:#555;
+    font-size:16px;
+
+}
+
+
+.valor{
+
+    margin-top:10px;
+    font-size:28px;
+    font-weight:bold;
+    color:#071d38;
+
+}
+
+
+
+
+/* menu */
+
+.menu{
+
+    position:fixed;
+    bottom:0;
+    left:0;
+
+    width:100%;
+
+    background:#071d38;
+
+    display:flex;
+
+    justify-content:space-around;
+
+    padding:12px 0;
+
+}
+
+
+
+.menu a{
+
+    color:white;
+    text-decoration:none;
+
+    font-size:11px;
+
+    text-align:center;
+
+}
+
+
+.menu span{
+
+    display:block;
+
+    font-size:22px;
+
+}
+
+
+
+</style>
+
+
+</head>
+
+
+
+<body>
+
+
+
+<div class="topo">
+
+<div class="logo">
+🌎 WORLD BUSINESS
+</div>
+
+</div>
+
+
+
+
+<div class="bemvindo">
+
+Bem-vindo, 
+<span id="nomeUsuario">
+Usuário
+</span>
+
+!
+
+</div>
+
+
+
+
+<div class="container">
+
+
+
+<div class="card">
+
+<div class="titulo">
+💰 Saldo
+</div>
+
+
+<div class="valor">
+
+US$ <span id="saldo">
+0.00
+</span>
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+<div class="titulo">
+👥 Indicados
+</div>
+
+
+<div class="valor">
+
+<span id="indicados">
+0
+</span>
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+<div class="titulo">
+💵 Ganhos de Indicação
+</div>
+
+
+<div class="valor">
+
+US$ <span id="ganhos">
+0.00
+</span>
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+<div class="titulo">
+📈 Rendimento Mensal
+</div>
+
+
+<div class="valor">
+
+US$ <span id="rendimento">
+0.00
+</span>
+
+</div>
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+<!-- MENU -->
+
+<div class="menu">
+
+
+<a href="painel.html">
+
+<span>🏠</span>
+
+Início
+
+</a>
+
+
+
+<a href="investimento.html">
+
+<span>💰</span>
+
+Investimento
+
+</a>
+
+
+
+<a href="equipe.html">
+
+<span>👥</span>
+
+Minha Equipe
+
+</a>
+
+
+
+<a href="saque.html">
+
+<span>💳</span>
+
+Saque
+
+</a>
+
+
+
+<a href="conta.html">
+
+<span>⚙</span>
+
+Minha Conta
+
+</a>
+
+
+
+<a href="#" onclick="sair()">
+
+<span>🚪</span>
+
+Sair
+
+</a>
+
+
+</div>
+
+
+
+
+
+<script type="module">
+
+
+// IMPORTA O FIREBASE JÁ EXISTENTE
+
+import { auth, db } from "./script.js";
+
+
+import { 
+
+onAuthStateChanged
+
+} from 
+
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+
+
+import {
+
+doc,
+getDoc
+
+} from
+
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+
+
+
+// VERIFICA USUÁRIO LOGADO
+
+
+onAuthStateChanged(auth, async(usuario)=>{
+
+
+if(usuario){
+
+
+const uid = usuario.uid;
+
+
+
+const referencia = doc(db,"usuarios",uid);
+
+
+
+const resultado = await getDoc(referencia);
+
+
+
+if(resultado.exists()){
+
+
+const dados = resultado.data();
+
+
+
+
+document.getElementById("nomeUsuario").innerHTML =
+dados.nome || "Usuário";
+
+
+
+document.getElementById("saldo").innerHTML =
+Number(dados.saldo || 0).toFixed(2);
+
+
+
+document.getElementById("indicados").innerHTML =
+dados.indicados || 0;
+
+
+
+document.getElementById("ganhos").innerHTML =
+Number(dados.ganhos || 0).toFixed(2);
+
+
+
+document.getElementById("rendimento").innerHTML =
+Number(dados.rendimento || 0).toFixed(2);
+
+
+
+}
+
+
+
+}else{
+
+
+window.location.href="login.html";
+
+
+}
+
+
+});
+
+
+
+
+
+// SAIR
+
+window.sair = function(){
+
+
+auth.signOut()
+.then(()=>{
+
+window.location.href="login.html";
+
+});
+
+
+}
+
+
+
+</script>
+
+
+
+</body>
+
+</html>
