@@ -6,6 +6,7 @@ import {
   sendEmailVerification
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
+// Configuração do Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyDMlE3ljSbAv9QNnvspqyewIJANJJyLPZM",
   authDomain: "btcinvestbr.firebaseapp.com",
@@ -16,38 +17,48 @@ const firebaseConfig = {
   measurementId: "G-Y7VXPDBH2G"
 };
 
+// Inicializa o Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 auth.languageCode = "pt-BR";
 
+// Procura o formulário
 const form = document.getElementById("cadastroForm");
 
-form.addEventListener("submit", async (e) => {
+if (!form) {
+  alert("Erro: formulário com id 'cadastroForm' não foi encontrado.");
+} else {
+
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const email = document.getElementById("email").value;
+    const email = document.getElementById("email").value.trim();
     const senha = document.getElementById("senha").value;
 
     try {
 
-        const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        senha
+      );
 
-        await sendEmailVerification(userCredential.user);
+      await sendEmailVerification(userCredential.user);
 
-        alert("Conta criada com sucesso!\n\nVerifique seu e-mail para confirmar sua conta.");
+      alert("Conta criada com sucesso!\n\nVerifique seu e-mail para confirmar sua conta.");
 
-form.reset();
+      form.reset();
 
-// Aguarda 3 segundos e abre a tela de login
-setTimeout(() => {
-    window.location.href = "login.html";
-}, 3000);
+      setTimeout(() => {
+        window.location.href = "login.html";
+      }, 3000);
 
     } catch (erro) {
-
-        alert("Erro: " + erro.message);
-
+      alert("Erro: " + erro.message);
+      console.error(erro);
     }
 
-});
+  });
+
+}
