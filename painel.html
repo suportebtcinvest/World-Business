@@ -237,18 +237,11 @@ US$ <span id="ganhos">
 </div>
 
 
-</div>
-
-
-
-
-
 <div class="card">
 
 <div class="titulo">
 📈 Rendimento Mensal
 </div>
-
 
 <div class="valor">
 
@@ -258,14 +251,27 @@ US$ <span id="rendimento">
 
 </div>
 
+</div>
+
+<div class="card">
+
+<div class="titulo">
+🏆 Meu Plano
+</div>
+
+<div class="valor">
+
+<span id="plano">
+Nenhum
+</span>
 
 </div>
 
-
-
+</div>
 
 </div>
 
+<!-- MENU -->
 
 
 
@@ -418,15 +424,13 @@ dados.indicados || 0;
 document.getElementById("ganhos").innerHTML =
 Number(dados.ganhos || 0).toFixed(2);
 
-
-
 document.getElementById("rendimento").innerHTML =
 Number(dados.rendimento || 0).toFixed(2);
 
-
+document.getElementById("plano").innerHTML =
+dados.plano || "Nenhum";
 
 }
-
 
 
 }else{
