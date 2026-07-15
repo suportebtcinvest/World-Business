@@ -50,7 +50,8 @@ body{
 .preco{
     font-size:34px;
     font-weight:bold;
-    color:#0b5ed7;
+    color:#d4af37;
+    text-shadow:0 1px 3px rgba(0,0,0,.15);
     margin:20px 0;
 }
 
@@ -139,7 +140,24 @@ button:hover{
     display:block;
     font-size:22px;
 }
+.aviso-importante{
+    background:#fff8e1;
+    border-left:5px solid #d4af37;
+    border-radius:10px;
+    padding:15px;
+    margin:18px 0;
+}
 
+.aviso-importante h3{
+    margin-top:0;
+    color:#b8860b;
+}
+
+.aviso-importante p{
+    margin:8px 0;
+    color:#444;
+    line-height:1.5;
+}
 </style>
 
 </head>
@@ -172,7 +190,7 @@ R$ 500,00
 <li>Saques disponíveis</li>
 </ul>
 
-<button onclick="abrirPlano('Prata','500,00')">
+<button id="planoPrata" onclick="abrirPlano('Prata','500,00')">
 ESCOLHER PLANO
 </button>
 
@@ -192,7 +210,7 @@ R$ 1.000,00
 <li>Saques disponíveis</li>
 </ul>
 
-<button onclick="abrirPlano('Ouro','1.000,00')">
+<<button id="planoOuro" onclick="abrirPlano('Ouro','1.000,00')">
 ESCOLHER PLANO
 </button>
 
@@ -212,7 +230,7 @@ ESCOLHER PLANO
 
 <p><strong>Valor:</strong></p>
 
-<h2 style="color:#0b5ed7;">
+<h2 style="color:#d4af37;">
 R$ <span id="valorPlano"></span>
 </h2>
 
@@ -225,10 +243,26 @@ SUA_CHAVE_PIX_AQUI
 </div>
 
 <p>
-
 ✅ Ativação em até <strong>24 horas</strong> após a confirmação do pagamento.
-
 </p>
+
+<div class="aviso-importante">
+
+<h3>📢 Importante</h3>
+
+<p>
+Após realizar o pagamento via PIX, clique no botão abaixo e envie o comprovante ao <strong>Suporte Financeiro</strong>.
+</p>
+
+<p>
+Assim que o pagamento for confirmado, sua conta será ativada e você poderá acessar a plataforma com seu e-mail e senha cadastrados.
+</p>
+
+<p>
+<strong>Prazo para análise:</strong> até 24 horas.
+</p>
+
+</div>
 
 <button onclick="copiarPix()">
 
@@ -237,7 +271,7 @@ SUA_CHAVE_PIX_AQUI
 </button>
 
 <button class="telegram"
-onclick="window.open('https://t.me/Silva2021silva','_blank')">
+onclick="enviarComprovante()">
 
 📲 Enviar para o Suporte Financeiro
 
@@ -277,6 +311,7 @@ Minha Conta
 </div>
 
 <script src="investimento.js"></script>
+<script type="module" src="investimento-firebase.js"></script>
 
 </body>
 </html>

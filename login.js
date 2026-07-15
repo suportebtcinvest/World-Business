@@ -6,6 +6,12 @@ import {
     signOut
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
+import {
+    getFirestore,
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
 // Configuração do Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyDMlE3ljSbAv9QNnvspqyewIJANJJyLPZM",
@@ -19,12 +25,15 @@ const firebaseConfig = {
 
 // Inicializa o Firebase
 const app = initializeApp(firebaseConfig);
+
 const auth = getAuth(app);
+const db = getFirestore(app);
 
 // Formulário de login
 const form = document.getElementById("loginForm");
 
 form.addEventListener("submit", async (e) => {
+
     e.preventDefault();
 
     const email = document.getElementById("email").value.trim();
@@ -44,10 +53,31 @@ form.addEventListener("submit", async (e) => {
             return;
         }
 
-        alert("Login realizado com sucesso!");
+        // Busca os dados do usuário no Firestore
+        const docRef = doc(db, "usuarios", userCredential.user.uid);
+        const docSnap = await getDoc(docRef);
 
-        // Redireciona para o painel
-        window.location.href = "painel.html";
+        if (!docSnap.exists()) {
+
+            alert("Usuário não encontrado no banco de dados.");
+            return;
+
+        }
+
+        const usuario = docSnap.data();
+
+        // Verifica se é administrador
+        if (usuario.admin === true) {
+
+            alert("Bem-vindo, Administrador!");
+            window.location.href = "admin.html";
+
+        } else {
+
+            alert("Login realizado com sucesso!");
+            window.location.href = "painel.html";
+
+        }
 
     } catch (erro) {
 

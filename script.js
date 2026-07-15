@@ -1,25 +1,15 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-
 import {
-  getAuth,
   createUserWithEmailAndPassword,
   sendEmailVerification
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
-// Configuração do Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyDMlE3ljSbAv9QNnvspqyewIJANJJyLPZM",
-  authDomain: "btcinvestbr.firebaseapp.com",
-  projectId: "btcinvestbr",
-  storageBucket: "btcinvestbr.firebasestorage.app",
-  messagingSenderId: "867549398021",
-  appId: "1:867549398021:web:916df8bf77ea302698c86c",
-  measurementId: "G-Y7VXPDBH2G"
-};
+import {
+  doc,
+  setDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-// Inicializa o Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+import { auth, db } from "./firebase.js";
 
 auth.languageCode = "pt-BR";
 
@@ -27,36 +17,82 @@ auth.languageCode = "pt-BR";
 const form = document.getElementById("cadastroForm");
 
 if (!form) {
+
   alert("Erro: formulário com id 'cadastroForm' não foi encontrado.");
+
 } else {
 
   form.addEventListener("submit", async (e) => {
+
     e.preventDefault();
 
+    // Dados do formulário
+    const nome = document.getElementById("nome").value.trim();
+    const telefone = document.getElementById("telefone").value.trim();
+    const cpf = document.getElementById("cpf").value.trim();
+    const indicador = document.getElementById("indicador").value.trim();
     const email = document.getElementById("email").value.trim();
     const senha = document.getElementById("senha").value;
 
     try {
 
+      // Cria a conta no Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         senha
       );
 
+      // Salva os dados do usuário no Firestore
+      await setDoc(doc(db, "usuarios", userCredential.user.uid), {
+
+    nome: nome,
+    telefone: telefone,
+    cpf: cpf,
+    indicador: indicador,
+    email: email,
+
+    // Situação da conta
+    status: "Pendente",
+
+    // Plano ainda não escolhido
+    plano: "",
+
+    // Situação do pagamento
+    statusPagamento: "Não selecionado",
+
+    // Conta bloqueada até aprovação
+    contaLiberada: false,
+
+    saldo: 0,
+    indicados: 0,
+    ganhos: 0,
+    rendimento: 0,
+
+    dataCadastro: serverTimestamp()
+
+});
+
+      // Envia o e-mail de confirmação
       await sendEmailVerification(userCredential.user);
 
-      alert("Conta criada com sucesso!\n\nVerifique seu e-mail para confirmar sua conta.");
+      alert(
+        "Conta criada com sucesso!\n\nVerifique seu e-mail para confirmar sua conta."
+      );
 
       form.reset();
 
       setTimeout(() => {
-        window.location.href = "login.html";
+
+        window.location.href = "investimento.html";
+
       }, 3000);
 
     } catch (erro) {
-      alert("Erro: " + erro.message);
+
       console.error(erro);
+      alert("Erro ao criar conta: " + erro.message);
+
     }
 
   });
