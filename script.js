@@ -46,32 +46,37 @@ if (!form) {
       // Salva os dados do usuário no Firestore
       await setDoc(doc(db, "usuarios", userCredential.user.uid), {
 
-    nome: nome,
-    telefone: telefone,
-    cpf: cpf,
-    indicador: indicador,
-    email: email,
+        nome: nome,
+        telefone: telefone,
+        cpf: cpf,
+        indicador: indicador,
+        email: email,
 
-    // Situação da conta
-    status: "Pendente",
+        // Administrador
+        admin: false,
 
-    // Plano ainda não escolhido
-    plano: "",
+        // Situação da conta
+        status: "pendente",
 
-    // Situação do pagamento
-    statusPagamento: "Não selecionado",
+        // Plano ainda não escolhido
+        plano: "",
 
-    // Conta bloqueada até aprovação
-    contaLiberada: false,
+        // Situação do pagamento
+        statusPagamento: "nao_selecionado",
 
-    saldo: 0,
-    indicados: 0,
-    ganhos: 0,
-    rendimento: 0,
+        // Conta bloqueada até aprovação
+        contaLiberada: false,
 
-    dataCadastro: serverTimestamp()
+        // Dados financeiros
+        saldo: 0,
+        indicados: 0,
+        ganhos: 0,
+        rendimento: 0,
 
-});
+        // Data do cadastro
+        dataCadastro: serverTimestamp()
+
+      });
 
       // Envia o e-mail de confirmação
       await sendEmailVerification(userCredential.user);
@@ -91,6 +96,7 @@ if (!form) {
     } catch (erro) {
 
       console.error(erro);
+
       alert("Erro ao criar conta: " + erro.message);
 
     }

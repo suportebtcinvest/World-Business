@@ -24,7 +24,7 @@ async function salvarPlano(plano, valor) {
 
             plano: plano,
             valorPlano: valor,
-            statusPagamento: "Aguardando Pagamento",
+            statusPagamento: "aguardando_pagamento",
             contaLiberada: false,
             dataEscolhaPlano: serverTimestamp()
 
@@ -42,12 +42,12 @@ async function salvarPlano(plano, valor) {
 
 btnPrata.addEventListener("click", () => {
 
-    salvarPlano("Prata", 500);
+    salvarPlano("prata", 500);
 
 });
 
 btnOuro.addEventListener("click", () => {
 
-    salvarPlano("Ouro", 1000);
+    salvarPlano("ouro", 1000);
 
 });
