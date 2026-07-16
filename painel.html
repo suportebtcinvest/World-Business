@@ -186,7 +186,7 @@ Usuário
 
 <div class="valor">
 
-US$ <span id="saldo">
+R$ <span id="saldo">
 0.00
 </span>
 
@@ -230,7 +230,7 @@ US$ <span id="saldo">
 
 <div class="valor">
 
-US$ <span id="ganhos">
+R$ <span id="ganhos">
 0.00
 </span>
 
@@ -245,9 +245,9 @@ US$ <span id="ganhos">
 
 <div class="valor">
 
-US$ <span id="rendimento">
-00.00
-</span>
+<span id="rendimento">
+0
+</span>%
 
 </div>
 
@@ -354,25 +354,16 @@ Sair
 import { auth, db } from "./firebase.js";
 
 
-import { 
-
+import {
 onAuthStateChanged
-
-} from 
-
-"https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-
+} from
+"https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
 import {
-
 doc,
-getDoc
-
+onSnapshot
 } from
-
-"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
+"https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 
 
@@ -388,49 +379,43 @@ if(usuario){
 
 const uid = usuario.uid;
 
+console.log("UID LOGADO:", uid);
 
+const referencia = doc(db, "usuarios", uid);
 
-const referencia = doc(db,"usuarios",uid);
+onSnapshot(referencia, (documento) => {
 
+    if (documento.exists()) {
 
+        const dados = documento.data();
 
-const resultado = await getDoc(referencia);
+        console.log("Dados atualizados:", dados);
 
+        document.getElementById("nomeUsuario").innerHTML =
+            dados.nome || "Usuário";
 
+        document.getElementById("saldo").innerHTML =
+            Number(dados.saldo || 0).toFixed(2);
 
-if(resultado.exists()){
+        document.getElementById("indicados").innerHTML =
+            dados.indicados || 0;
 
+        document.getElementById("ganhos").innerHTML =
+            Number(dados.ganhos || 0).toFixed(2);
 
-const dados = resultado.data();
+        document.getElementById("rendimento").innerHTML =
+    Number(dados.rendimento || 0);
 
+        document.getElementById("plano").innerHTML =
+    (dados.plano || "Nenhum").toUpperCase();
 
+    } else {
 
+        console.log("Documento do usuário não encontrado.");
 
-document.getElementById("nomeUsuario").innerHTML =
-dados.nome || "Usuário";
+    }
 
-
-
-document.getElementById("saldo").innerHTML =
-Number(dados.saldo || 0).toFixed(2);
-
-
-
-document.getElementById("indicados").innerHTML =
-dados.indicados || 0;
-
-
-
-document.getElementById("ganhos").innerHTML =
-Number(dados.ganhos || 0).toFixed(2);
-
-document.getElementById("rendimento").innerHTML =
-Number(dados.rendimento || 0).toFixed(2);
-
-document.getElementById("plano").innerHTML =
-dados.plano || "Nenhum";
-
-}
+});
 
 
 }else{

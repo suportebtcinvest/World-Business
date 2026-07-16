@@ -1,45 +1,181 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Painel Administrativo - World Business</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-    <header>
-        <h1>World Business</h1>
-        <h2>Painel Administrativo</h2>
-    </header>
+<header>
+    <h1>World Business</h1>
+    <h2>Painel Administrativo</h2>
+</header>
 
-    <main class="admin-container">
 
-        <h2>Usuários Cadastrados</h2>
+<main class="admin-container">
 
-        <table class="tabela-admin">
+    <h2>Usuários Cadastrados</h2>
 
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Email</th>
-                    <th>Plano</th>
-                    <th>Status</th>
-                    <th>Saldo</th>
-                    <th>Ação</th>
-                </tr>
-            </thead>
 
-            <tbody id="listaUsuarios">
-                <!-- Os usuários aparecerão aqui automaticamente -->
-            </tbody>
+    <table class="tabela-admin">
 
-        </table>
+        <thead>
 
-    </main>
+            <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Plano</th>
+                <th>Status</th>
+                <th>Saldo</th>
+                <th>Ação</th>
+            </tr>
 
-    <script type="module" src="admin.js"></script>
+        </thead>
+
+
+        <tbody id="listaUsuarios">
+
+            <!-- Usuários carregados pelo Firebase -->
+
+        </tbody>
+
+
+    </table>
+
+
+
+    <!-- Área de edição -->
+
+    <div id="areaEdicao" style="display:none; margin-top:30px;">
+
+
+        <h2>Editar Usuário</h2>
+
+
+        <input type="hidden" id="usuarioId">
+
+
+        <label>
+            Plano:
+        </label>
+
+        <input type="text" id="editPlano">
+
+
+        <br><br>
+
+
+        <label>
+            Saldo:
+        </label>
+
+        <input type="number" id="editSaldo">
+
+
+        <br><br>
+
+
+        <label>
+    Rendimento (%):
+</label>
+
+<input type="number" id="editRendimento" min="0" max="100" step="0.01">
+
+
+        <br><br>
+
+
+        <label>
+            Ganhos:
+        </label>
+
+        <input type="number" id="editGanhos">
+
+
+        <br><br>
+
+
+        <label>
+            Indicados:
+        </label>
+
+        <input type="number" id="editIndicados">
+
+
+        <br><br>
+
+
+        <label>
+            Status:
+        </label>
+
+        <select id="editStatus">
+
+            <option value="ativo">
+                Ativo
+            </option>
+
+            <option value="pendente">
+                Pendente
+            </option>
+
+            <option value="bloqueado">
+                Bloqueado
+            </option>
+
+        </select>
+
+
+        <br><br>
+
+
+        <label>
+            Conta Liberada:
+        </label>
+
+
+        <select id="editContaLiberada">
+
+            <option value="true">
+                Sim
+            </option>
+
+            <option value="false">
+                Não
+            </option>
+
+        </select>
+
+
+        <br><br>
+
+
+        <button id="salvarAlteracoes">
+            Salvar Alterações
+        </button>
+
+
+        <button id="cancelarEdicao">
+            Cancelar
+        </button>
+
+
+    </div>
+
+
+</main>
+
+
+
+<script type="module" src="admin.js"></script>
+
 
 </body>
+
 </html>

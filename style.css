@@ -174,3 +174,339 @@ button:hover{
 .tabela-admin button:hover{
     background:#15803d;
 }
+/* =========================================
+   HOME - WORLD BUSINESS
+========================================= */
+
+html{
+    scroll-behavior:smooth;
+}
+
+/* MENU */
+
+header{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 60px;
+    box-sizing:border-box;
+    background:rgba(8,20,40,.95);
+    backdrop-filter:blur(8px);
+    z-index:999;
+    box-shadow:0 2px 10px rgba(0,0,0,.35);
+}
+
+.logo{
+    font-size:30px;
+    font-weight:bold;
+    color:#fff;
+}
+
+.logo span{
+    color:#3b82f6;
+}
+
+nav ul{
+    list-style:none;
+    display:flex;
+    gap:35px;
+    margin:0;
+    padding:0;
+}
+
+nav ul li a{
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+    transition:.3s;
+}
+
+nav ul li a:hover{
+    color:#60a5fa;
+}
+
+/* HERO */
+
+.hero{
+
+    height:100vh;
+
+    background:
+        linear-gradient(rgba(5,15,30,.82),rgba(5,15,30,.82)),
+        url("imagens/banner.jpg");
+
+    background-size:cover;
+
+    background-position:center;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:20px;
+
+}
+
+.hero-content{
+
+    max-width:850px;
+
+}
+
+.hero h1{
+
+    font-size:48px;
+
+    margin-bottom:20px;
+
+    color:#fff;
+
+    text-shadow:0 4px 20px rgba(0,0,0,.5);
+
+}
+
+.hero p{
+
+    font-size:22px;
+
+    color:#dbeafe;
+
+    margin-bottom:40px;
+
+}
+
+.hero-btn{
+
+    display:inline-block;
+
+    padding:18px 40px;
+
+    background:#2563eb;
+
+    color:white;
+
+    text-decoration:none;
+
+    border-radius:50px;
+
+    font-weight:bold;
+
+    transition:.3s;
+
+}
+
+.hero-btn:hover{
+
+    background:#1d4ed8;
+
+    transform:translateY(-4px);
+
+}
+
+/* QUEM SOMOS */
+
+.quem-somos{
+
+    max-width:1100px;
+
+    margin:auto;
+
+    padding:90px 30px;
+
+    line-height:1.9;
+
+}
+
+.quem-somos h2{
+
+    font-size:38px;
+
+    color:#60a5fa;
+
+    margin-bottom:40px;
+
+}
+
+.quem-somos p{
+
+    font-size:18px;
+
+    color:#e5e7eb;
+
+    margin-bottom:25px;
+
+}
+
+/* PLANOS */
+
+.planos{
+
+    background:#16213e;
+
+    padding:80px 20px;
+
+}
+
+.planos h2{
+
+    font-size:38px;
+
+    color:#60a5fa;
+
+    margin-bottom:40px;
+
+}
+
+.plano{
+
+    max-width:650px;
+
+    margin:auto;
+
+    background:white;
+
+    color:#222;
+
+    border-radius:20px;
+
+    padding:40px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.3);
+
+}
+
+.plano p{
+
+    font-size:18px;
+
+    margin:18px 0;
+
+}
+
+.plano button{
+
+    margin-top:30px;
+
+    width:100%;
+
+    padding:16px;
+
+    font-size:18px;
+
+    border-radius:10px;
+
+}
+
+/* SUPORTE */
+
+.suporte{
+
+    padding:80px 20px;
+
+}
+
+.suporte h2{
+
+    font-size:38px;
+
+    color:#60a5fa;
+
+}
+
+.suporte p{
+
+    font-size:18px;
+
+    margin:25px auto;
+
+    max-width:700px;
+
+}
+
+.btn{
+
+    display:inline-block;
+
+    padding:15px 35px;
+
+    background:#2563eb;
+
+    color:white;
+
+    text-decoration:none;
+
+    border-radius:40px;
+
+    font-weight:bold;
+
+    transition:.3s;
+
+}
+
+.btn:hover{
+
+    background:#1d4ed8;
+
+}
+
+/* RODAPÉ */
+
+footer{
+
+    background:#081428;
+
+    padding:25px;
+
+    margin-top:50px;
+
+    color:#9ca3af;
+
+}
+
+/* CELULAR */
+
+@media(max-width:900px){
+
+    header{
+
+        flex-direction:column;
+
+        padding:20px;
+
+    }
+
+    nav ul{
+
+        flex-direction:column;
+
+        gap:15px;
+
+        margin-top:20px;
+
+    }
+
+    .hero h1{
+
+        font-size:38px;
+
+    }
+
+    .hero p{
+
+        font-size:18px;
+
+    }
+
+    .plano{
+
+        padding:25px;
+
+    }
+
+}
