@@ -4,15 +4,21 @@ import {
     collection,
     getDocs,
     doc,
-    updateDoc
+    updateDoc,
+    getDoc
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
+
+// ===============================
+// ELEMENTOS USUÁRIOS
+// ===============================
 
 const tabela = document.getElementById("listaUsuarios");
 
 const areaEdicao = document.getElementById("areaEdicao");
 
 const usuarioId = document.getElementById("usuarioId");
+
 
 const editPlano = document.getElementById("editPlano");
 const editSaldo = document.getElementById("editSaldo");
@@ -22,17 +28,25 @@ const editIndicados = document.getElementById("editIndicados");
 const editStatus = document.getElementById("editStatus");
 const editContaLiberada = document.getElementById("editContaLiberada");
 
+
 const salvarAlteracoes = document.getElementById("salvarAlteracoes");
 const cancelarEdicao = document.getElementById("cancelarEdicao");
 
 
 
+// ===============================
+// CARREGAR USUÁRIOS
+// ===============================
+
+
 async function carregarUsuarios(){
+
 
     tabela.innerHTML = "";
 
 
     const usuarios = await getDocs(collection(db,"usuarios"));
+
 
 
     usuarios.forEach((documento)=>{
@@ -46,17 +60,25 @@ async function carregarUsuarios(){
 
         tabela.innerHTML += `
 
+
         <tr>
+
 
             <td>${usuario.nome || ""}</td>
 
+
             <td>${usuario.email || ""}</td>
+
 
             <td>${usuario.plano || "Nenhum"}</td>
 
+
             <td>${usuario.status || "pendente"}</td>
 
-            <td>R$ ${usuario.saldo || 0}</td>
+
+            <td>
+                R$ ${usuario.saldo || 0}
+            </td>
 
 
             <td>
@@ -65,11 +87,11 @@ async function carregarUsuarios(){
                     Editar
                 </button>
 
-
             </td>
 
 
         </tr>
+
 
         `;
 
@@ -82,10 +104,16 @@ async function carregarUsuarios(){
 
 
 
+// ===============================
+// EDITAR USUÁRIO
+// ===============================
+
+
 window.editarUsuario = async function(id){
 
 
     const usuarios = await getDocs(collection(db,"usuarios"));
+
 
 
     usuarios.forEach((documento)=>{
@@ -95,6 +123,7 @@ window.editarUsuario = async function(id){
 
 
             const usuario = documento.data();
+
 
 
             usuarioId.value = id;
@@ -113,7 +142,8 @@ window.editarUsuario = async function(id){
             editStatus.value = usuario.status || "pendente";
 
 
-            editContaLiberada.value = usuario.contaLiberada ? "true" : "false";
+            editContaLiberada.value =
+            usuario.contaLiberada ? "true" : "false";
 
 
 
@@ -131,6 +161,12 @@ window.editarUsuario = async function(id){
 
 
 
+
+// ===============================
+// SALVAR ALTERAÇÕES
+// ===============================
+
+
 salvarAlteracoes.addEventListener("click", async ()=>{
 
 
@@ -146,23 +182,18 @@ salvarAlteracoes.addEventListener("click", async ()=>{
 
             plano: editPlano.value,
 
-
             saldo: Number(editSaldo.value),
-
 
             rendimento: Number(editRendimento.value),
 
-
             ganhos: Number(editGanhos.value),
-
 
             indicados: Number(editIndicados.value),
 
-
             status: editStatus.value,
 
-
-            contaLiberada: editContaLiberada.value === "true"
+            contaLiberada:
+            editContaLiberada.value === "true"
 
 
         });
@@ -184,6 +215,7 @@ salvarAlteracoes.addEventListener("click", async ()=>{
 
         console.error(error);
 
+
         alert("Erro ao atualizar usuário.");
 
 
@@ -193,6 +225,13 @@ salvarAlteracoes.addEventListener("click", async ()=>{
 });
 
 
+
+
+
+
+// ===============================
+// CANCELAR EDIÇÃO
+// ===============================
 
 
 cancelarEdicao.addEventListener("click", ()=>{
@@ -206,4 +245,166 @@ cancelarEdicao.addEventListener("click", ()=>{
 
 
 
+
+
+
+// ===============================
+// SAQUES
+// ===============================
+
+
+const tabelaSaques = document.getElementById("listaSaques");
+
+
+
+async function carregarSaques(){
+
+
+    tabelaSaques.innerHTML = "";
+
+
+
+    const saques = await getDocs(collection(db,"saques"));
+
+
+
+    saques.forEach((documento)=>{
+
+
+        const saque = documento.data();
+
+        const id = documento.id;
+
+
+
+        tabelaSaques.innerHTML += `
+
+
+        <tr>
+
+
+            <td>${saque.nome || ""}</td>
+
+
+            <td>${saque.email || ""}</td>
+
+
+            <td>
+                R$ ${saque.valor || 0}
+            </td>
+
+
+            <td>
+                ${saque.status || "pendente"}
+            </td>
+
+
+            <td>
+
+
+                <button onclick="aprovarSaque('${id}')">
+                    Aprovar
+                </button>
+
+
+
+                <button onclick="recusarSaque('${id}')">
+                    Recusar
+                </button>
+
+
+            </td>
+
+
+        </tr>
+
+
+        `;
+
+
+
+    });
+
+
+}
+
+
+
+
+
+// ===============================
+// APROVAR SAQUE
+// ===============================
+
+window.aprovarSaque = async function(id){
+
+    // Busca o saque
+    const saqueRef = doc(db,"saques",id);
+    const saqueSnap = await getDoc(saqueRef);
+
+    const saque = saqueSnap.data();
+
+
+    // Busca o usuário dono do saque
+    const usuarioRef = doc(db,"usuarios",saque.usuarioId);
+    const usuarioSnap = await getDoc(usuarioRef);
+
+    const usuario = usuarioSnap.data();
+
+
+    // Novo saldo
+    const novoSaldo = Number(usuario.saldo || 0) - Number(saque.valor);
+
+
+    // Atualiza saldo do usuário
+    await updateDoc(usuarioRef,{
+
+        saldo: novoSaldo
+
+    });
+
+
+    // Atualiza status do saque
+    await updateDoc(saqueRef,{
+
+        status:"aprovado"
+
+    });
+
+
+    alert("Saque aprovado e saldo atualizado!");
+
+
+    carregarSaques();
+
+}
+
+// ===============================
+// RECUSAR SAQUE
+// ===============================
+
+window.recusarSaque = async function(id){
+
+
+    const saqueRef = doc(db,"saques",id);
+
+
+    await updateDoc(saqueRef,{
+
+        status:"recusado"
+
+    });
+
+
+    alert("Saque recusado!");
+
+
+    carregarSaques();
+
+
+}
+
+// INICIAR PAINEL
+
 carregarUsuarios();
+carregarSaques();

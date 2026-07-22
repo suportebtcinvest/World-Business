@@ -137,6 +137,111 @@ body{
 
 
 
+.btn-saque{
+
+    width:100%;
+    padding:12px;
+    margin-top:25px;
+    background:#0d6efd;
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.3s;
+
+}
+
+.btn-saque:hover{
+
+    background:#0b5ed7;
+
+
+}
+/* ===== MODAL DE SAQUE ===== */
+
+.modal{
+
+    display:none;
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    background:rgba(0,0,0,.5);
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:9999;
+
+}
+
+.modal-conteudo{
+
+    width:90%;
+    max-width:400px;
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:15px;
+
+    text-align:center;
+
+}
+
+.modal-conteudo input{
+
+    width:100%;
+
+    padding:12px;
+
+    border:1px solid #ccc;
+
+    border-radius:8px;
+
+    font-size:16px;
+
+    box-sizing:border-box;
+
+}
+
+.modal-conteudo button{
+
+    padding:10px 20px;
+
+    margin:5px;
+
+    border:none;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+}
+
+#confirmarSaque{
+
+    background:#0d6efd;
+
+    color:white;
+
+}
+
+#fecharModal{
+
+    background:#dc3545;
+
+    color:white;
+
+}
 </style>
 
 
@@ -179,19 +284,60 @@ Usuário
 
 <div class="card">
 
-<div class="titulo">
-💰 Saldo
+    <div class="titulo">
+        💰 Saldo
+    </div>
+
+    <div class="valor">
+        R$ <span id="saldo">0.00</span>
+    </div>
+  
+
+    <br>
+
+
+    <button id="btnSaque" class="btn-saque">
+        💸 Solicitar Saque
+    </button>
+
 </div>
+<!-- HISTÓRICO DE SAQUES -->
 
+<div class="card" style="margin-top:25px;">
 
-<div class="valor">
+    <h3 style="margin-bottom:15px;">
+        📄 Histórico de Saques
+    </h3>
 
-R$ <span id="saldo">
-0.00
-</span>
+    <table style="width:100%; border-collapse:collapse;">
 
-</div>
+        <thead>
 
+            <tr style="background:#1b1b1b;">
+
+                <th style="padding:10px;">Data</th>
+
+                <th style="padding:10px;">Valor</th>
+
+                <th style="padding:10px;">Status</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="historicoSaques">
+
+            <tr>
+
+                <td colspan="3" style="padding:15px;text-align:center;">
+                    Nenhum saque encontrado.
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
 
 </div>
 
@@ -346,6 +492,32 @@ Sair
 
 
 
+<div id="modalSaque" class="modal">
+
+    <div class="modal-conteudo">
+
+        <h2>💸 Solicitação de Saque</h2>
+
+        <p>Saldo disponível: <strong>R$ <span id="saldoModal">0.00</span></strong></p>
+
+        <input
+            type="number"
+            id="valorSaque"
+            placeholder="Digite o valor do saque">
+
+        <br><br>
+
+        <button id="confirmarSaque">
+            Solicitar
+        </button>
+
+        <button id="fecharModal">
+            Cancelar
+        </button>
+
+    </div>
+
+</div>
 <script type="module">
 
 
@@ -361,21 +533,102 @@ onAuthStateChanged
 
 import {
 doc,
-onSnapshot
+onSnapshot,
+collection,
+addDoc,
+query,
+where,
+orderBy,
+serverTimestamp
 } from
 "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 
 
 
-// VERIFICA USUÁRIO LOGADO
+// VARIÁVEIS DO USUÁRIO LOGADO
 
+
+let usuarioAtual = null;
+
+let dadosUsuario = null;
+
+const tabelaHistorico = document.getElementById("historicoSaques");
+
+function carregarHistoricoSaques(uid){
+
+    const consulta = query(
+
+        collection(db, "saques"),
+
+        where("usuarioId", "==", uid),
+
+        orderBy("data", "desc")
+
+    );
+
+    onSnapshot(consulta, (snapshot)=>{
+
+        tabelaHistorico.innerHTML = "";
+
+        if(snapshot.empty){
+
+            tabelaHistorico.innerHTML = `
+                <tr>
+                    <td colspan="3" style="padding:15px;text-align:center;">
+                        Nenhum saque encontrado.
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
+
+        snapshot.forEach((doc)=>{
+
+            const saque = doc.data();
+
+            let data = "-";
+
+            if(saque.data){
+
+                data = saque.data.toDate().toLocaleDateString("pt-BR");
+
+            }
+
+            tabelaHistorico.innerHTML += `
+
+                <tr>
+
+                    <td style="padding:10px;">${data}</td>
+
+                    <td style="padding:10px;">
+                        R$ ${Number(saque.valor).toFixed(2)}
+                    </td>
+
+                    <td style="padding:10px;">
+                        ${saque.status}
+                    </td>
+
+                </tr>
+
+            `;
+
+        });
+
+    });
+
+}
+
+// VERIFICA USUÁRIO LOGADO
 
 onAuthStateChanged(auth, async(usuario)=>{
 
 
 if(usuario){
-
+    usuarioAtual = usuario;
+carregarHistoricoSaques(usuario.uid);
 
 const uid = usuario.uid;
 
@@ -389,6 +642,8 @@ onSnapshot(referencia, (documento) => {
 
         const dados = documento.data();
 
+        dadosUsuario = dados;
+
         console.log("Dados atualizados:", dados);
 
         document.getElementById("nomeUsuario").innerHTML =
@@ -396,6 +651,9 @@ onSnapshot(referencia, (documento) => {
 
         document.getElementById("saldo").innerHTML =
             Number(dados.saldo || 0).toFixed(2);
+
+            document.getElementById("saldoModal").innerHTML =
+    Number(dados.saldo || 0).toFixed(2);
 
         document.getElementById("indicados").innerHTML =
             dados.indicados || 0;
@@ -447,8 +705,117 @@ window.location.href="login.html";
 
 
 }
+// SISTEMA DO MODAL DE SAQUE
+
+const btnSaque = document.getElementById("btnSaque");
+
+const modalSaque = document.getElementById("modalSaque");
+
+const fecharModal = document.getElementById("fecharModal");
 
 
+btnSaque.addEventListener("click", ()=>{
+
+    modalSaque.style.display = "flex";
+
+});
+
+
+fecharModal.addEventListener("click", ()=>{
+
+    modalSaque.style.display = "none";
+
+});
+// CONFIRMAR SOLICITAÇÃO DE SAQUE
+
+const confirmarSaque = document.getElementById("confirmarSaque");
+
+
+confirmarSaque.addEventListener("click", async ()=>{
+
+    confirmarSaque.disabled = true;
+
+
+    const valor = Number(document.getElementById("valorSaque").value);
+
+    const saldoAtual = Number(document.getElementById("saldo").innerHTML);
+
+
+
+    if(!valor || valor <= 0){
+
+        confirmarSaque.disabled = false;
+
+        alert("Digite um valor válido.");
+
+        return;
+
+    }
+
+
+
+    if(valor > saldoAtual){
+
+        confirmarSaque.disabled = false;
+
+        alert("Saldo insuficiente.");
+
+        return;
+
+    }
+
+
+
+    try {
+
+
+        await addDoc(collection(db, "saques"), {
+
+
+            usuarioId: usuarioAtual.uid,
+
+            nome: dadosUsuario.nome,
+
+            email: dadosUsuario.email,
+
+            valor: valor,
+
+            status: "pendente",
+
+            data: serverTimestamp()
+
+
+        });
+
+
+
+        alert("Solicitação de saque recebida com sucesso. O pagamento será processado em até 24 horas.");
+
+
+
+        modalSaque.style.display = "none";
+
+
+        confirmarSaque.disabled = false;
+
+
+
+    } catch(erro) {
+
+
+        console.log("Erro ao salvar saque:", erro);
+
+
+        confirmarSaque.disabled = false;
+
+
+        alert("Erro ao enviar solicitação.");
+
+
+    }
+
+
+});
 
 </script>
 

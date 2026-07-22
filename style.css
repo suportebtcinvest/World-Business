@@ -509,4 +509,25 @@ footer{
 
     }
 
+}#listaSaques th {
+    background: #0a84ff;
+    color: white;
+    padding: 12px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#listaSaques td {
+    color: #222;
+    padding: 12px;
+    text-align: center;
+}
+table thead th {
+    background-color: #0a84ff !important;
+    color: white !important;
+}
+
+table tbody td {
+    background-color: white !important;
+    color: #333 !important;
 }
