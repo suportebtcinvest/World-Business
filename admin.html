@@ -8,17 +8,138 @@
     <title>Painel Administrativo - World Business</title>
 
     <link rel="stylesheet" href="style.css">
+
+    <style>
+
+        /* ===============================
+           ÁREA DE SAQUES
+        =============================== */
+
+        .saques-menu {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .saques-menu button {
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .btn-pendentes {
+            background: #f0ad4e;
+            color: white;
+        }
+
+        .btn-pagos {
+            background: #16a34a;
+            color: white;
+        }
+
+        .btn-recusados {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-pendentes:hover,
+        .btn-pagos:hover,
+        .btn-recusados:hover {
+            opacity: 0.85;
+        }
+
+        .contador-saques {
+            margin: 10px 0 20px 0;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .secao-saques {
+            margin-top: 20px;
+        }
+
+        .titulo-saques {
+            margin-bottom: 15px;
+        }
+
+        .mensagem-vazia {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .data-saque {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .status-pendente {
+            color: #d97706;
+            font-weight: bold;
+        }
+
+        .status-aprovado {
+            color: #16a34a;
+            font-weight: bold;
+        }
+
+        .status-recusado {
+            color: #dc2626;
+            font-weight: bold;
+        }
+
+        .btn-aprovar {
+            background: #16a34a;
+            color: white;
+            border: none;
+            padding: 9px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .btn-recusar {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 9px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-aprovar:hover,
+        .btn-recusar:hover {
+            opacity: 0.85;
+        }
+
+    </style>
+
 </head>
 
 <body>
 
 <header>
+
     <h1>World Business</h1>
+
     <h2>Painel Administrativo</h2>
+
 </header>
 
 
 <main class="admin-container">
+
+
+    <!-- =========================================
+         USUÁRIOS
+    ========================================== -->
 
     <h2>Usuários Cadastrados</h2>
 
@@ -28,12 +149,19 @@
         <thead>
 
             <tr>
+
                 <th>Nome</th>
+
                 <th>Email</th>
+
                 <th>Plano</th>
+
                 <th>Status</th>
+
                 <th>Saldo</th>
+
                 <th>Ação</th>
+
             </tr>
 
         </thead>
@@ -45,57 +173,214 @@
 
         </tbody>
 
-
     </table>
 
 
+
+    <!-- =========================================
+         SAQUES
+    ========================================== -->
+
     <h2 style="margin-top:40px;">
-💳 Solicitações de Saque
-</h2>
+        💳 Solicitações de Saque
+    </h2>
 
 
-<table class="tabela-admin">
+    <!-- MENU DOS SAQUES -->
 
-<thead>
+    <div class="saques-menu">
 
-<tr>
+        <button
+            class="btn-pendentes"
+            onclick="mostrarSaques('pendentes')">
 
-<th>Nome</th>
-<th>Email</th>
-<th>Valor</th>
-<th>Status</th>
-<th>Ação</th>
+            🟡 Pendentes
+            (<span id="contadorPendentes">0</span>)
 
-</tr>
-
-</thead>
+        </button>
 
 
-<tbody id="listaSaques">
+        <button
+            class="btn-pagos"
+            onclick="mostrarSaques('pagos')">
 
-</tbody>
+            🟢 Pagos
+            (<span id="contadorPagos">0</span>)
+
+        </button>
 
 
-</table>
+        <button
+            class="btn-recusados"
+            onclick="mostrarSaques('recusados')">
+
+            🔴 Recusados
+            (<span id="contadorRecusados">0</span>)
+
+        </button>
+
+    </div>
 
 
 
-    <!-- Área de edição -->
+    <!-- =========================================
+         SAQUES PENDENTES
+    ========================================== -->
 
-    <div id="areaEdicao" style="display:none; margin-top:30px;">
+    <div id="secaoPendentes" class="secao-saques">
+
+        <h3 class="titulo-saques">
+            🟡 Saques Pendentes
+        </h3>
+
+
+        <table class="tabela-admin">
+
+            <thead>
+
+                <tr>
+
+                    <th>Nome</th>
+
+                    <th>Email</th>
+
+                    <th>Valor</th>
+
+                    <th>Solicitado em</th>
+
+                    <th>Status</th>
+
+                    <th>Ação</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="listaSaquesPendentes">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+
+    <!-- =========================================
+         SAQUES PAGOS
+    ========================================== -->
+
+    <div
+        id="secaoPagos"
+        class="secao-saques"
+        style="display:none;">
+
+        <h3 class="titulo-saques">
+            🟢 Saques Pagos
+        </h3>
+
+
+        <table class="tabela-admin">
+
+            <thead>
+
+                <tr>
+
+                    <th>Nome</th>
+
+                    <th>Email</th>
+
+                    <th>Valor</th>
+
+                    <th>Data do pagamento</th>
+
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="listaSaquesPagos">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+
+    <!-- =========================================
+         SAQUES RECUSADOS
+    ========================================== -->
+
+    <div
+        id="secaoRecusados"
+        class="secao-saques"
+        style="display:none;">
+
+        <h3 class="titulo-saques">
+            🔴 Saques Recusados
+        </h3>
+
+
+        <table class="tabela-admin">
+
+            <thead>
+
+                <tr>
+
+                    <th>Nome</th>
+
+                    <th>Email</th>
+
+                    <th>Valor</th>
+
+                    <th>Data da recusa</th>
+
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="listaSaquesRecusados">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+
+    <!-- =========================================
+         ÁREA DE EDIÇÃO DO USUÁRIO
+    ========================================== -->
+
+    <div
+        id="areaEdicao"
+        style="display:none; margin-top:30px;">
 
 
         <h2>Editar Usuário</h2>
 
 
-        <input type="hidden" id="usuarioId">
+        <input
+            type="hidden"
+            id="usuarioId">
 
 
         <label>
             Plano:
         </label>
 
-        <input type="text" id="editPlano">
+        <input
+            type="text"
+            id="editPlano">
 
 
         <br><br>
@@ -105,17 +390,24 @@
             Saldo:
         </label>
 
-        <input type="number" id="editSaldo">
+        <input
+            type="number"
+            id="editSaldo">
 
 
         <br><br>
 
 
         <label>
-    Rendimento (%):
-</label>
+            Rendimento (%):
+        </label>
 
-<input type="number" id="editRendimento" min="0" max="100" step="0.01">
+        <input
+            type="number"
+            id="editRendimento"
+            min="0"
+            max="100"
+            step="0.01">
 
 
         <br><br>
@@ -125,7 +417,9 @@
             Ganhos:
         </label>
 
-        <input type="number" id="editGanhos">
+        <input
+            type="number"
+            id="editGanhos">
 
 
         <br><br>
@@ -135,7 +429,9 @@
             Indicados:
         </label>
 
-        <input type="number" id="editIndicados">
+        <input
+            type="number"
+            id="editIndicados">
 
 
         <br><br>
@@ -203,7 +499,10 @@
 
 
 
-<script type="module" src="admin.js"></script>
+<script
+    type="module"
+    src="admin.js">
+</script>
 
 
 </body>
